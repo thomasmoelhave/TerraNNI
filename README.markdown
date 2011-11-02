@@ -98,6 +98,6 @@ The program terranni-2d is produced during compilation. It is equivalent to the 
 References
 ===========
 
-[1] Sibson, R. (1981). "A brief description of natural neighbor interpolation (Chapter 2)". In V. Barnett. Interpreting Multivariate Data. Chichester: John Wiley. pp. 21–36
-[2] Alex Beutel, Thomas Mølhave, Pankaj K. Agarwal (2010) Natural neighbor interpolation based grid DEM construction using a GPU In GIS '10: Proceedings of the 18th ACM SIGSPATIAL International Symposium on Advances in Geographic Information Systems.
+[1] Sibson, R. (1981). "A brief description of natural neighbor interpolation (Chapter 2)". In V. Barnett. Interpreting Multivariate Data. Chichester: John Wiley. pp. 21–36   
+[2] Alex Beutel, Thomas Mølhave, Pankaj K. Agarwal (2010) Natural neighbor interpolation based grid DEM construction using a GPU In GIS '10: Proceedings of the 18th ACM SIGSPATIAL International Symposium on Advances in Geographic Information Systems.   
 [3] Alex Beutel, Thomas Mølhave, Pankaj K. Agarwal, Arnold P. Boedihardjo, James A. Shine (2011). "TerraNNI: Natural Neighbor Interpolation on a 3D Grid Using a GPU". In GIS '11 Proceedings of the 19th ACM SIGSPATIAL International Symposium on Advances in Geographic Information Systems, 2011.
