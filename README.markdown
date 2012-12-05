@@ -37,14 +37,15 @@ Compilation
 
 TerraNNI uses CMake for its build system.
 
+```bash
 $ git clone git://github.com/thomasmoelhave/TerraNNI.git
 $ git submodule init
 $ git submodule update
 $ mkdir build
 $ cd build
-$ ccmake ../TerraNNI
-( alternatively, use cmake-gui ../TerraNNI )
+$ ccmake ../TerraNNI #( alternatively, use cmake-gui ../TerraNNI )
 $ make
+```
 
 
 Caveats
@@ -60,10 +61,12 @@ fix this is to create a directory with symlinks to older GCC versions
 and tell NVCC to find the compilers there. We support setting the
 directory through the **CUDA_COMPILER_BINDIR** variable.
 
+```bash
 $ mkdir mygcc
 $ cd mygcc
 $ ln -s $(which g++-4.4) g++
 $ ln -s $(which gcc-4.4) gcc
+```
 
 Then set **CUDA_COMPILER_BINDIR** to point to the mygcc directory. The
 older GCC versions can be installed through your distribution package
@@ -83,7 +86,9 @@ the mean time. The spatial origin of the output grids is (10,10).
   the time stamp for that point. Thus, in the example below, the
   intensity values are presumably somewhere in the [2000,2006] range.
 
+```bash
 $ ./terranni --tilepath=<path to las files> --output=out_directory --cell-size=1.0 --site-radius=5.0 --wp-path=/var/tmp/wp --time-start=2002 --time-length=3 --time-radius=2 --tmp-path=/var/tmp  --time-step=0.5 --origin-x=10 --origin-y=10 --grid-cols=2000 --grid-rows=200
+```
 
 The --site-radius and --time-radious parameters set the *region of
 influence* in space and time respectively. When interpolation at a
