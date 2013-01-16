@@ -72,6 +72,6 @@ add_executable(terranni-2d "terranni.cpp")
 set_target_properties(terranni-2d PROPERTIES COMPILE_FLAGS -DTERRANNI_2DONLY)
 
 target_link_libraries(terranni  nni tpie ${Boost_LIBRARIES} ${EXTRA_LIBS} ${LIBLAS_LIBRARY} ${TPIE_LIBRARY})
-target_link_libraries(terranni  nni ${Boost_LIBRARIES} ${EXTRA_LIBS} las ${TPIE_LIBRARY})
+target_link_libraries(terranni  nni ${Boost_LIBRARIES} ${EXTRA_LIBS} ${TPIE_LIBRARY})
 target_link_libraries(terranni-2d  nni tpie ${Boost_LIBRARIES} ${EXTRA_LIBS} ${LIBLAS_LIBRARY} ${TPIE_LIBRARY})
-target_link_libraries(terranni-2d  nni ${Boost_LIBRARIES} ${EXTRA_LIBS} las ${TPIE_LIBRARY})
+target_link_libraries(terranni-2d  nni ${Boost_LIBRARIES} ${EXTRA_LIBS} ${TPIE_LIBRARY})
