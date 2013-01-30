@@ -28,12 +28,12 @@ void las_reader<P, Z>::do_open(const std::string &filename){
 		throw std::runtime_error("Could not open file " + filename);
 	}
 	try{
-		this->reader = new liblas::LASReader(*stream);
+		this->reader = new liblas::Reader(*stream);
 	} catch(const std::runtime_error &err){
 		throw std::runtime_error("Could not open file " + filename + " an error happened in libLAS: " + err.what());
 	}
 
-	const liblas::LASHeader &head = reader->GetHeader();
+	const liblas::Header &head = reader->GetHeader();
 }
 
 template<typename P, typename Z>
@@ -43,8 +43,8 @@ void las_reader<P, Z>::do_close(){
 }
 
 template<typename P, typename Z>
-bool las_reader<P, Z>::ignore(const liblas::LASPoint& p) const {
-	const liblas::uint8_t c = p.GetClassification();
+bool las_reader<P, Z>::ignore(const liblas::Point& p) const {
+	const boost::uint8_t c = p.GetClassification().GetClass();
 	//return (c != 2);
 	//never ignore, regardless of classification
 	return false;
@@ -54,7 +54,7 @@ template<typename P, typename Z>
 bool las_reader<P, Z>::get_next_point(P &point){
 	try {
 		while(reader->ReadNextPoint()){
-			const liblas::LASPoint &p = reader->GetPoint();
+			const liblas::Point &p = reader->GetPoint();
 			if (!ignore(p)) {
 				point = P(static_cast<double>(p.GetX()), static_cast<double>(p.GetY()), static_cast<double>(p.GetZ()), (int)p.GetIntensity());
 				return true;
@@ -73,6 +73,6 @@ void las_reader<P, Z>::do_reset()
 {
 	this->stream->seekg (0, std::ios::beg);
 	delete reader;
-	this->reader = new liblas::LASReader(*stream);
-	const liblas::LASHeader &head = reader->GetHeader();
+	this->reader = new liblas::Reader(*stream);
+	const liblas::Header &head = reader->GetHeader();
 }

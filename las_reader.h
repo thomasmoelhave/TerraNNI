@@ -28,8 +28,9 @@
 #include "point_reader.h"
 
 #include <fstream>
-#include <liblas/lasreader.hpp>
-#include <liblas/lasheader.hpp>
+#include <liblas/reader.hpp>
+#include <liblas/header.hpp>
+#include <boost/cstdint.hpp>
 
 namespace nni_io {
 	template<typename P, typename Z>
@@ -37,9 +38,9 @@ namespace nni_io {
 		public:
 			virtual ~las_reader(){this->close();}
 
-			const liblas::LASHeader& get_header(){
+			const liblas::Header& get_header(){
 				assert(reader!=NULL);
-				const liblas::LASHeader &head = reader->GetHeader();
+				const liblas::Header &head = reader->GetHeader();
 				return head;
 			}
 
@@ -51,9 +52,9 @@ namespace nni_io {
 
 		private:
 			//ignore point (use classification to decide)
-			bool ignore(const liblas::LASPoint& p) const;
+			bool ignore(const liblas::Point& p) const;
 			std::ifstream *stream;
-			liblas::LASReader *reader;
+			liblas::Reader *reader;
 	};
 #include "las_reader.inl"
 }

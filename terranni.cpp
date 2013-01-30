@@ -74,7 +74,7 @@ struct gridheader {
 	float minx,miny,maxx,maxy,minz,maxz;
 };
 
-void update_super(const liblas::LASHeader &newtile, gridheader& super) {
+void update_super(const liblas::Header &newtile, gridheader& super) {
 	super.minx = std::min(super.minx,(float)newtile.GetMinX());
 	super.miny = std::min(super.miny,(float)newtile.GetMinY());
 	super.minz = std::min(super.minz,(float)newtile.GetMinZ());
@@ -588,6 +588,11 @@ int main (int argc, char** argv) {
 		timeStep = 1;
 	}
 
+	if(timeStep == 0) {
+		cerr << "Cannot set timeStep = 0.  Resetting it to 1.\n";
+		timeStep = 1;
+	}
+
 
 	std::vector<tile> tilevec;
 
@@ -606,6 +611,8 @@ int main (int argc, char** argv) {
 		cout << tilepath << " contains no .las files, aborting.";
 		return EXIT_SUCCESS;
 	}
+
+	cout << "LAS BBOX: x:["<<super_grid.minx <<", " << super_grid.maxx << "]. y:[" << super_grid.miny << ", " << super_grid.maxy << "]\n";
 
 	if(vm.count("origin-x")) super_grid.minx = vm["origin-x"].as<float>();
 	if(vm.count("origin-y")) super_grid.miny = vm["origin-y"].as<float>();
