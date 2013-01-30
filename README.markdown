@@ -24,7 +24,7 @@ Dependencies
 
 TerraNNI uses the following libraries
 
-  * libLAS 1.2, available at http://liblas.org/ 
+  * libLAS 1.6, available at http://liblas.org/ 
   * TPIE, available at https://github.com/thomasmoelhave/tpie (tpie is
     included through a git submodule, so there is no need to install
     it independently).
