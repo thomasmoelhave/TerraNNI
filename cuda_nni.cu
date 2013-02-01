@@ -38,12 +38,17 @@ using namespace cuda_nni;
 
 #include </usr/include/GL/glew.h>
 
-#include "cutil_inline.h"
-#include <cutil_gl_inline.h>
+//#include <helper_cuda.h>
+//#include <helper_cuda_gl.h>
+
+//#include "cutil_inline.h"
+//#include <cutil_gl_inline.h>
+
 //#include <cudaGL.h>
+
 #include <cuda_gl_interop.h>
 #include <cuda_runtime.h>
-#include <cutil_gl_error.h>
+//#include <cutil_gl_error.h>
 
 #include <cstdlib>
 
@@ -226,7 +231,7 @@ void cuda_nni::cudaSwitchVoronoiRB(int rbIndex) {
 
 	fprintf(stderr, "Register Query render buffer %d\n", rb_query_index);
 	theFree = checkMemory();
-	cutilSafeCall(cudaGraphicsGLRegisterImage(&queryBuffer_CUDA, rb_query_index, GL_RENDERBUFFER, cudaGraphicsMapFlagsReadOnly));
+	cudaGraphicsGLRegisterImage(&queryBuffer_CUDA, rb_query_index, GL_RENDERBUFFER, cudaGraphicsMapFlagsReadOnly);
 	theFree2 = checkMemory();
 	cerr << "Memory used: " << (theFree-theFree2) << "\n";
 
@@ -459,20 +464,20 @@ void cuda_nni::cudaSetup(int nrows, int ncols) {
 	size_t num_bytes2; 
 
 	cerr << "Map VBO resuorces\n";
-	cutilSafeCall(cudaGraphicsMapResources(1, &vbo_res_num, 0));
-	cutilSafeCall(cudaGraphicsMapResources(1, &vbo_res_denom, 0));
-	cutilSafeCall(cudaGraphicsResourceGetMappedPointer((void **)&dptrNum, &num_bytes, vbo_res_num));
-	cutilSafeCall(cudaGraphicsResourceGetMappedPointer((void **)&dptrDenom, &num_bytes2, vbo_res_denom));
+	cudaGraphicsMapResources(1, &vbo_res_num, 0);
+	cudaGraphicsMapResources(1, &vbo_res_denom, 0);
+	cudaGraphicsResourceGetMappedPointer((void **)&dptrNum, &num_bytes, vbo_res_num);
+	cudaGraphicsResourceGetMappedPointer((void **)&dptrDenom, &num_bytes2, vbo_res_denom);
 
-	cutilSafeCall(cudaGraphicsMapResources(1, &siteBuffer_CUDA, 0)); 
+	cudaGraphicsMapResources(1, &siteBuffer_CUDA, 0); 
 	cudaArray * siteArray;
-	cutilSafeCall(cudaGraphicsSubResourceGetMappedArray(&siteArray, siteBuffer_CUDA, 0,0));
-	cutilSafeCall(cudaBindTextureToArray(siteTex, siteArray));
+	cudaGraphicsSubResourceGetMappedArray(&siteArray, siteBuffer_CUDA, 0,0);
+	cudaBindTextureToArray(siteTex, siteArray);
 
-	cutilSafeCall(cudaGraphicsMapResources(1, &queryBuffer_CUDA, 0)); 
+	cudaGraphicsMapResources(1, &queryBuffer_CUDA, 0); 
 	cudaArray * queryArray;
-	cutilSafeCall(cudaGraphicsSubResourceGetMappedArray(&queryArray, queryBuffer_CUDA, 0,0));
-	cutilSafeCall(cudaBindTextureToArray(queryTex, queryArray));
+	cudaGraphicsSubResourceGetMappedArray(&queryArray, queryBuffer_CUDA, 0,0);
+	cudaBindTextureToArray(queryTex, queryArray);
 
 	// Zero VBO values
 	int N = nrows * ncols;
@@ -483,8 +488,8 @@ void cuda_nni::cudaSetup(int nrows, int ncols) {
 	zeroValues<<<blocksPerGrid, threadsPerBlock>>>(dptrDenom, N);
 	cudaThreadSynchronize();
 
-	cutilSafeCall(cudaGraphicsUnmapResources(1, &queryBuffer_CUDA, 0)); 
-	cutilSafeCall(cudaGraphicsUnmapResources(1, &siteBuffer_CUDA, 0)); 
+	cudaGraphicsUnmapResources(1, &queryBuffer_CUDA, 0); 
+	cudaGraphicsUnmapResources(1, &siteBuffer_CUDA, 0); 
 }
 
 // Perform buffer analysis
@@ -495,15 +500,15 @@ __host__ void cudaBufferAnalysis(int nrows, int ncols, int scaling, int blockWid
 
 
 	// Map renderbuffers for use
-	cutilSafeCall(cudaGraphicsMapResources(1, &siteBuffer_CUDA, 0)); 
+	cudaGraphicsMapResources(1, &siteBuffer_CUDA, 0); 
 	cudaArray * siteArray;
-	cutilSafeCall(cudaGraphicsSubResourceGetMappedArray(&siteArray, siteBuffer_CUDA, 0,0));
-	cutilSafeCall(cudaBindTextureToArray(siteTex, siteArray));
+	cudaGraphicsSubResourceGetMappedArray(&siteArray, siteBuffer_CUDA, 0,0);
+	cudaBindTextureToArray(siteTex, siteArray);
 
-	cutilSafeCall(cudaGraphicsMapResources(1, &queryBuffer_CUDA, 0)); 
+	cudaGraphicsMapResources(1, &queryBuffer_CUDA, 0); 
 	cudaArray * queryArray;
-	cutilSafeCall(cudaGraphicsSubResourceGetMappedArray(&queryArray, queryBuffer_CUDA, 0,0));
-	cutilSafeCall(cudaBindTextureToArray(queryTex, queryArray));
+	cudaGraphicsSubResourceGetMappedArray(&queryArray, queryBuffer_CUDA, 0,0);
+	cudaBindTextureToArray(queryTex, queryArray);
 
 	//TODO: Do this value for nthreads need to be taken from CUDA?
 	int nthreads = 32;
@@ -523,8 +528,8 @@ __host__ void cudaBufferAnalysis(int nrows, int ncols, int scaling, int blockWid
 
 	// Unmap renderbuffers
 	// If this is not done then future OpenGL calls will produce unexpected results
-	cutilSafeCall(cudaGraphicsUnmapResources(1, &queryBuffer_CUDA, 0)); 
-	cutilSafeCall(cudaGraphicsUnmapResources(1, &siteBuffer_CUDA, 0)); 
+	cudaGraphicsUnmapResources(1, &queryBuffer_CUDA, 0); 
+	cudaGraphicsUnmapResources(1, &siteBuffer_CUDA, 0); 
 
 }
 
@@ -542,12 +547,12 @@ __host__ void cudaCompleteAnalysis(int nrows, int ncols, int ** res, int zMult) 
 	cudaThreadSynchronize();
 
 	// Unmap numerator VBO
-	cutilSafeCall(cudaGraphicsUnmapResources(1, &vbo_res_num, 0));
+	cudaGraphicsUnmapResources(1, &vbo_res_num, 0);
 	cudaGraphicsUnregisterResource(vbo_res_num);
 	glBindBuffer(GL_ARRAY_BUFFER_ARB, vboNum );
 
 	// Unmap denominator VBO
-	cutilSafeCall(cudaGraphicsUnmapResources(1, &vbo_res_denom, 0));
+	cudaGraphicsUnmapResources(1, &vbo_res_denom, 0);
 	cudaGraphicsUnregisterResource(vbo_res_denom);
 	glBindBuffer(GL_ARRAY_BUFFER_ARB, vboDenom );
 	// Read values from denominator
@@ -584,13 +589,23 @@ void cuda_nni::init(const nni::Settings& s) {
 	startWithGLUT();
 	//startOffscreen2();
 
+
+
+	//int deviceCount = 0;
+
+
+
 	// Set CUDA
-	cerr << "Max gflops: "<<cutGetMaxGflopsDeviceId() << "\n";
-	cudaSetDevice(cutGetMaxGflopsDeviceId());
-	cudaGLSetGLDevice(cutGetMaxGflopsDeviceId());
+	//cerr << "Max gflops: "<< cutGetMaxGflopsDeviceId() << "\n";
+	//cudaSetDevice(cutGetMaxGflopsDeviceId());
+	//cudaGLSetGLDevice(cutGetMaxGflopsDeviceId());
+
+	cudaSetDevice(0);
+	cudaGLSetGLDevice(0);
 
 	cudaDeviceProp deviceProps;
-    cutilSafeCall(cudaGetDeviceProperties(&deviceProps, cutGetMaxGflopsDeviceId()));
+    //cudaGetDeviceProperties(&deviceProps, cutGetMaxGflopsDeviceId());
+    cudaGetDeviceProperties(&deviceProps, 0);
 	cerr << "CUDA device [" << deviceProps.name << "] has " << deviceProps.multiProcessorCount << "Multi-Processors\n";
 
 	checkMemory();

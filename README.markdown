@@ -29,7 +29,7 @@ TerraNNI uses the following libraries
     included through a git submodule, so there is no need to install
     it independently).
   * Boost, available at http://boost.org
-  * CUDA, available at http://nvidia.com
+  * CUDA 5, available at http://nvidia.com
 
 
 Compilation
