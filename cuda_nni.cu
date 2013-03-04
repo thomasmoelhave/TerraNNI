@@ -269,7 +269,62 @@ void startWithGLUT() {
 	glutReshapeFunc ( reshape );
 	
 	glewInit();
+}
 
+
+void startWithPBuffers() {
+  Display *display = XOpenDisplay( NULL );
+  if ( display == NULL ) {
+    fprintf( stderr, "Bad DISPLAY (%s).\n", getenv( "DISPLAY" ) );
+    exit( 1 );
+  }
+
+  int attributes[] = {
+    GLX_RED_SIZE, 8,
+    GLX_GREEN_SIZE, 8,
+    GLX_BLUE_SIZE, 8,
+    GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT,
+    0
+  };
+
+  int nconfigs = 0;
+  GLXFBConfig *configs = glXChooseFBConfig( display,
+					    DefaultScreen( display ),
+					    attributes,
+					    &nconfigs );
+  if ( !configs ) {
+    fprintf( stderr, "Num configs: %d.\n", nconfigs );
+    exit( 1 );
+  }
+
+  int pbuffer_attributes[] = {
+    GLX_PBUFFER_WIDTH, 800,
+    GLX_PBUFFER_HEIGHT, 800,
+    0
+  };
+
+  GLXPbuffer pbuffer = glXCreatePbuffer( display,
+					 configs[ 0 ],
+					 pbuffer_attributes );
+  if ( !pbuffer ) {
+    perror( "glXCreatePbuffer" );
+    exit( 1 );
+  }
+
+  GLXContext context = glXCreateNewContext( display,
+					    configs[ 0 ],
+					    GLX_RGBA_TYPE,
+					    0,
+					    GL_TRUE );
+
+  if ( glXMakeCurrent( display, pbuffer, context ) == 0 ) {
+    perror( "glXMakeCurrent" );
+    exit( 1 );
+	}
+ 
+
+	reshape(800,800);
+	glewInit();
 }
 
 // Attempt to not create a window (without GLUT) for true offscreen rendering
@@ -588,6 +643,7 @@ void cuda_nni::init(const nni::Settings& s) {
 	// Setup OpenGL with GLUT
 	startWithGLUT();
 	//startOffscreen2();
+	startWithPBuffers();
 
 
 
