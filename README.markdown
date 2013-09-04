@@ -56,21 +56,10 @@ succeede.  **CUDA_SDK_ROOT_DIR** must be set to the *C* directory of the
 NVIDIA GPU Computing SDK.
 
 If you are on a system running GCC 4.5 or newer, you may have to force
-the cuda compiler (nvcc) to use an older version of gcc. One way to
-fix this is to create a directory with symlinks to older GCC versions
-and tell NVCC to find the compilers there. We support setting the
-directory through the **CUDA_COMPILER_BINDIR** variable.
+the cuda compiler (nvcc) to use an older version of gcc. This can be
+done by setting the CUDA_HOST_COMPILER cmake variable to g++-4.4.
 
-```bash
-$ mkdir mygcc
-$ cd mygcc
-$ ln -s $(which g++-4.4) g++
-$ ln -s $(which gcc-4.4) gcc
-```
 
-Then set **CUDA_COMPILER_BINDIR** to point to the mygcc directory. The
-older GCC versions can be installed through your distribution package
-system.   
 
 Running
 =======
